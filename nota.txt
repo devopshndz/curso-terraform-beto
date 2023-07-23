@@ -1,0 +1,12 @@
+HCL es el lenguaje que utiliza Terrraform para declarar su código.
+El mejor aliado en todo el camino de Terraform es terraform registry en donde podremos encontrar todo lo relacionado
+con modulos, providers, etc.
+
+terraform init --> inicialización del proyecto en terraform
+terraform plan --> realizará un plan de que recursos va a crear, + crear - eliminar, ~ modificar
+terraform apply --> aplica los cambios previstos en el plan
+terraform show --> ver los recursos que terraform creó 
+terraform destroy --> destruye los recursos creados 
+
+el archivo terraform.tfstate lleva un registro de todo lo que se realiza.
+Se pueden separar contenido de terraform.tf en otros archivos.
