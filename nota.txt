@@ -5,7 +5,7 @@ con modulos, providers, etc.
 terraform init --> inicialización del proyecto en terraform
 terraform plan --> realizará un plan de que recursos va a crear, + crear - eliminar, ~ modificar
 terraform apply --> aplica los cambios previstos en el plan
-terraform show --> ver los recursos que terraform creó 
+terraform show --> ver los recursos que terraform creó o que deployó desde el tf.state
 terraform destroy --> destruye los recursos creados 
 terraform plan --out <nombre del archivo> --> guardar un plan
 terraform apply "nombre del archivo" --> deployar un plan guardados
