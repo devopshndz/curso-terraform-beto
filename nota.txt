@@ -7,6 +7,23 @@ terraform plan --> realizará un plan de que recursos va a crear, + crear - elim
 terraform apply --> aplica los cambios previstos en el plan
 terraform show --> ver los recursos que terraform creó 
 terraform destroy --> destruye los recursos creados 
+terraform plan --out <nombre del archivo> --> guardar un plan
+terraform apply "nombre del archivo" --> deployar un plan guardados
+terraform fmt --> darle formato a los códigos de terraform 
+terraform validate --> valida la sintaxis de los archivos .tf para que sean correctas.
+
 
 el archivo terraform.tfstate lleva un registro de todo lo que se realiza.
 Se pueden separar contenido de terraform.tf en otros archivos.
+
+Guardar el plan: esto se usa para guardar un plan que se va a deployar no necesariamente enseguida y evita que 
+modifiquen algo de ese plan:
+terraform plan --out <nombre del archivo>
+esto hará que el plan se ejecute pero al final del plan dirá: Saved the plan to: <nombre del archivo>
+para que luego cuando vayamos a hacer apply: terraform apply "nombre del archivo"
+
+terraform fmt da formato a los archvios de terraform, así se hace para todos los archivos, si se quiere para uno solo
+basta con pasarle el nombre a ese archivo. (pregunta de examen)
+con terraform validate, validamos la sintaxis de los archivos .tf tambien se puede hacer en archivos especificos.
+
+
