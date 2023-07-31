@@ -3,6 +3,7 @@ El mejor aliado en todo el camino de Terraform es terraform registry en donde po
 con modulos, providers, etc.
 
 terraform init --> inicialización del proyecto en terraform
+terraform init -upgrade --> inicialización del proyecto en terraform actualizando inits anteriores
 terraform plan --> realizará un plan de que recursos va a crear, + crear - eliminar, ~ modificar
 terraform apply --> aplica los cambios previstos en el plan
 terraform show --> ver los recursos que terraform creó o que deployó desde el tf.state
@@ -12,6 +13,8 @@ terraform apply "nombre del archivo" --> deployar un plan guardados
 terraform fmt --> darle formato a los códigos de terraform 
 terraform validate --> valida la sintaxis de los archivos .tf para que sean correctas.
 
+tree .terraform = muestra el contenido de los providers descargados de terraform en formato arbol
+rm -r .terraform = borra todo el contenido del proyecto terraform para poder iniciarlizar un proyecto desde 0
 
 el archivo terraform.tfstate lleva un registro de todo lo que se realiza.
 Se pueden separar contenido de terraform.tf en otros archivos.
@@ -26,4 +29,17 @@ terraform fmt da formato a los archvios de terraform, así se hace para todos lo
 basta con pasarle el nombre a ese archivo. (pregunta de examen)
 con terraform validate, validamos la sintaxis de los archivos .tf tambien se puede hacer en archivos especificos.
 
+constraints:
+    < menor
+    > mayor
+    <= menor o igual
+    >= mayor o igual
+    ~> mayor qué solo dentro de un rago
+    != diferente de
+
+Las constraints se utilizan para tener mas control acerca de veriones que se utilizan en terraform
+Se usan normalmente en el archivo provider.tf para especificar que versiones de providers o de terraform usar.
+Los alias (alias = "value") su usan para cuando vamos a hacer despliegue en multiples regiones de aws
+Se define un segundo o varios providers de aws y se le agrega un alias que lo o los identifique. Luego en los recursos a crear
+se llaman mediante provider = aws.<alias> así es como terraform identifica el provider y hace que el recurso se desplieuge en ese provider
 
