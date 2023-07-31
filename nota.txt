@@ -212,3 +212,15 @@ resource "aws_vpc" "vpc_ohio" {
     }
     provider = aws.ohio
 }
+
+-----------------------------
+Output
+Exponer por pantalla elementos que al hacer un plan son desconocidos y solo terraform puede conocerlos cuando hacer el apply, por ejemplo dir ip publica.
+Cuando el deployment termine
+
+output "linux_public_ip" {
+    value = aws_instance.linux.public_ip   (este public_ip es el output que va a mostrar)
+    description = "Muestro la ip publica asignada a la instancia"
+}
+
+estos output se pueden conocer mejor viendolos en terraform registry, llendose a cada servicio de aws tiene su documentacion y en la seccion output están todos los elementos que podemos exponer.
