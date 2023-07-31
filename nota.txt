@@ -43,3 +43,30 @@ Los alias (alias = "value") su usan para cuando vamos a hacer despliegue en mult
 Se define un segundo o varios providers de aws y se le agrega un alias que lo o los identifique. Luego en los recursos a crear
 se llaman mediante provider = aws.<alias> así es como terraform identifica el provider y hace que el recurso se desplieuge en ese provider
 
+manejo de variables:
+
+variable "ohio_cidr" {
+    default = "10.20.0.0/16"
+}
+y se llama mediante var.ohio_cidr
+
+mediante exportación:
+variable "virginia_cidr" {
+
+}
+
+export TF_VAR_virginia_cidr="10.10.0.0/16" 
+
+mediante el plan:
+terraform plan -var ohio_cidr="10.20.0.0/16"
+
+mejor forma: por medio de un archivo variables.tf y terraform.tfvars
+variables.tf -> definimos las variables
+terraform-tfvars -> llenamos las variables
+    este archivo se puede llamar también terraform.tfvars.json
+
+tipos de variables:
+string = "10.10.0.0/16" "este es un ejemplo"
+number = 1
+bool = true o flase
+any = cualquier tipo (es el tipo por defecto)
