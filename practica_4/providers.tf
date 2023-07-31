@@ -16,3 +16,10 @@ provider "aws" {
     region = "us-east-2" # region en donde trabajaremos
     alias = "ohio" # El alias nos permite darle un nombre a un provider y poder realizar despligues a este provider
 }
+
+# Contexto:
+# Los providers aquí colocados se utilizan para poder decir a terraform en donde vamos a desplegar nuestros recursos
+# Usamos constraints (<,>,<=,>=,~>,!=) para especificar y controlar las versiones a utilizar
+# Usamos alias para poder establecer una variable que haga referencia a una provider cuando se están utilizando mas de 2
+# el provider que no tenga alias será el provider por default en donde se desplegará todo lo que apliquemos en terraform.
+# para llamar este provider con alias, nos vamos al recurso y antes de cerrar el ultimo } colocamos provider = aws.<alias>
