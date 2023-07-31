@@ -66,7 +66,149 @@ terraform-tfvars -> llenamos las variables
     este archivo se puede llamar también terraform.tfvars.json
 
 tipos de variables:
-string = "10.10.0.0/16" "este es un ejemplo"
+description = "que es lo que hace o funcion que esperamos que cumpla"
+type = cualquiera de los que estan abajo
+string = "10.10.0.0/16" "este es un ejemplo" todo lo que agreguemos dentro de las comillas
 number = 1
 bool = true o flase
-any = cualquier tipo (es el tipo por defecto)
+any = cualquier tipo (es el tipo por defecto) (mala practica)
+
+sensitive = true/false (con true declaramos que cuando se haga un plan no se muestre el valor de la variable)
+
+conversion de tipos de variables:
+variable "cantidad" {
+    default = 5
+    type = number
+}
+
+variable "cantidad" {
+    default = "5"
+    type = number
+}
+
+aunque en la segunda variable cantidad coloquemos entre "5" al declarar type number terraform toma la variable como un numero.
+esto mismo pasa cuando usamos un booleano y un string. si colocamos default "false" y en type = bool, terraform se guía por el tipo booleano.
+
+tipo: listas
+variable "lista_cirds" {
+    default = ["10.10.0.0/16", "10.13.0.0/16"]
+    type = list(string)
+}
+admiten elementos repetidos. todos los elementos de una lista deben ser del mismo tipo (ej. números o strings)
+
+variable "aws_vpc" "vpc_virginia" {
+    cdir_block = var.lista_cidrs[0]
+    tags {
+        Name "VPC_Virginia"
+        env = "DEV
+    }
+}
+
+variable "aws_vpc" "vpc_ohio" {
+    cdir_block = var.lista_cidrs[1]
+    tags {
+        Name "VPC_Virginia"
+        env = "DEV
+    }
+    provider =aws.ohio
+}
+
+tomando el ejemplo anterior, se declara una variable lista_cirds con 2 valores (dentro de una lista) para las variables vpc_virginia y vpc_ohio se utiliza la variable lista_cirds llamandola y pasando la 
+posicion del valor [0] y [1] respectivamente
+
+tipo = map (clave valor, un diccionario)
+
+variable "map_cirds" {
+    default = {
+        "virginia" = "10.10.0.0/16"
+        "ohio" = "10.20.0.0/16"
+    }
+    type = map(string)
+}
+
+se llaman de la siguiente manera: en vez de llamarlas con [0] [1] se llaman cin el primer argumento del diccionario ["virginia] ["ohio]
+
+variable "aws_vpc" "vpc_virginia" {
+    cdir_block = var.lmap_cidrs["virginia"]
+    tags {
+        Name "VPC_Virginia"
+        env = "DEV
+    }
+}
+
+variable "aws_vpc" "vpc_ohio" {
+    cdir_block = var.map_cidrs["ohio"]
+    tags {
+        Name "VPC_Virginia"
+        env = "DEV
+    }
+    provider =aws.ohio
+}
+
+tipo: set (set no admite elementos repetidos, no podemos acceder a elementos puntuales)
+variable "set_cirds" {
+    default = ["10.10.0.0/16", "10.13.0.0/16"]
+    type = set(string)
+}
+
+variable "aws_vpc" "vpc_virginia" {
+    for_each = var.set_cidrs   Al ser un conjunto no admite elementos repetidos, se recorre con un for_each
+    cdir_block = each.value    llamamos cada elemento del set con each.value
+    tags {
+        Name "VPC_TEST"
+        env = "DEV
+    }
+}
+
+tipo = object
+
+variable "virginia" {
+    type = object({
+        nombre = string
+        cantidad = number
+        cidrs = list(string)
+        disponible = bool
+        env = string
+        owner = string
+    })
+
+Es un diccionario que contiene muchos tipos de valores declarados en las variables. la primera parte se establecen los tipos de las variables y la segunda, se colocan los valores
+
+    default = {
+        cantidad = 1
+        cidrs = ["10.10.0.0/16"]
+        disponible = true
+        env = "DEV"
+        nombre = "virginia"
+        owner = "beto"
+    }
+}
+
+para poder llamar las variables de este tipo de llaman con var.<diccionario>.variable
+
+resource "aws_vpc" "vpc_virginia" {
+    cidr_block = var.virginia.cidrs[0]
+    tags = {
+        Name = var.virginia.nombre
+        name = var.virginia.nombre
+        env = var.virginia.env
+    }
+}
+
+tipo = tupla
+similar a una lista pero puede contener diferentes tipos de elementos.
+variable "ohio" {
+    type = tuple([string, string, number, bool])
+    default = ["Ohio", "10.20.0.0/16", 1, false]
+}
+
+y se llaman:
+resource "aws_vpc" "vpc_ohio" {
+    cidr_block = var.ohio[1]    (llamada de la variable ohio)
+    tags = {
+        Name = var.ohio[0]
+        name = var.ohio[0]
+        env = var.ohio[4]
+    }
+    provider = aws.ohio
+}
