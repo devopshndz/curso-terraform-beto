@@ -224,3 +224,8 @@ output "linux_public_ip" {
 }
 
 estos output se pueden conocer mejor viendolos en terraform registry, llendose a cada servicio de aws tiene su documentacion y en la seccion output están todos los elementos que podemos exponer.
+
+Target resources:
+Los target resources nos sirven para cuando queremos hacer un apply en solo un recurso y no en todos los recursos que nos muestra el plan.
+Primero se hace un plan, luego:
+terraform apply --target <recurso> --> terraform apply --target aws_subnet.public_subnet

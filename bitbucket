@@ -1,0 +1,79 @@
+image: atlassian/default-image:2
+
+definitions:
+  steps:
+    - step: &start-pipeline
+        name: Start pipeline 
+        clone:
+          enabled: false
+        script:
+          - echo "Starting pipeline"  
+
+    # - step: &set-dev-env
+    #     name: Set Dev Environment
+    #     clone:
+    #         enabled: false
+    #     script:
+    #       - echo ENV=dev >> set_env.sh
+    #       - echo AWS_ACCESS_KEY_ID=${DEV_AWS_ACCESS_KEY_ID} >> set_env.sh
+    #       - echo AWS_SECRET_ACCESS_KEY=${DEV_AWS_SECRET_ACCESS_KEY} >> set_env.sh
+    #       - echo AWS_DEFAULT_REGION=${DEV_AWS_DEFAULT_REGION} >> set_env.sh
+    #       - echo AWS_EC2_KEY=${AWS_EC2_KEY} >> set_env.sh
+    #       - echo AWS_EC2_USER=${AWS_EC2_USER} >> set_env.sh
+    #       - echo EC2_HOST=${EC2_HOST} >> set_env.sh
+    #     artifacts:
+    #         - set_env.sh
+
+    - step: &deploy-into-ec2-instance
+        name: Deploy into ec2 instance
+        clone:
+          enabled: false
+        service:
+          - docker
+        script:
+          #- source set_env.sh
+          - echo "$AWS_EC2_KEY" > /tmp/key.pem
+          - chmod 400 /tmp/key.pem
+          - git clone https://$BITBUCKET_USERNAME/fracttal/hub.git
+          - cd hub
+          - git checkout develop
+          - git clone https://$BITBUCKET_USERNAME/fracttal/hub.git
+          - cd hub
+          - git checkout develop
+          - python3 -m venv venv
+          - source venv/bin/activate
+          - pip install pre-commit wheel setuptools black flake8
+          - pip install -r requirements.txt
+          - pre-commit install
+          - pre-commit run all-files
+          - python setup.py bdist_wheel
+          - ssh -o StrictHostKeyChecking=no -i /tmp/key.pem $AWS_EC2_USER@$EC2_HOST "cp -r /home/ec2-user/dockerairflow/plugins /home/ec2-user/backups/plugins_$(date +"%Y%m%d%H%M%S")"
+          - ssh -o StrictHostKeyChecking=no -i /tmp/key.pem $AWS_EC2_USER@$EC2_HOST "cp -r /home/ec2-user/dockerairflow/dags /home/ec2-user/backups/dags_$(date +"%Y%m%d%H%M%S")"
+          - ssh -o StrictHostKeyChecking=no -i /tmp/key.pem $AWS_EC2_USER@$EC2_HOST "sudo systemctl stop iniciar_airflow.service"
+          - ssh -o StrictHostKeyChecking=no -i /tmp/key.pem $AWS_EC2_USER@$EC2_HOST "docker stop $(docker ps -aq)"
+          - ssh -o StrictHostKeyChecking=no -i /tmp/key.pem $AWS_EC2_USER@$EC2_HOST "docker system prune -af"
+          - scp -o StrictHostKeyChecking=no -i /tmp/key.pem dist/fracttal_etl-0.2.0-py3-none-any.whl $AWS_EC2_USER@$EC2_HOST:/home/ec2-user/dockerairflow/plugins/
+          - ssh -o StrictHostKeyChecking=no -i /tmp/key.pem $AWS_EC2_USER@$EC2_HOST "cd /home/ec2-user/dockerairflow && ./mwaa-local-env build-image"
+          - ssh -o StrictHostKeyChecking=no -i /tmp/key.pem $AWS_EC2_USER@$EC2_HOST "sudo reboot"
+
+pipelines:
+  branches:
+    feature/*:
+      - step: *start-pipeline
+        <<: *deploy-into-ec2-instance
+          name: Deploy to Develop
+          deployment: dev
+          trigger: manual
+    develop:
+      - step: *start-pipeline
+        <<: *deploy-into-ec2-instance
+        name: Deploy to Develop
+        deployment: dev
+        trigger: manual
+    
+    Calidad:
+      - step: *start-pipeline
+        <<: *deploy-into-ec2-instance
+        name: Deploy to Calidad
+        deployment: test
+        trigger: manual
