@@ -10,5 +10,9 @@ terraform {
 
 provider "aws" {
     region = "us-east-1" # region en donde trabajaremos
+    default_tags {
+      # todos los tags que aquí coloquemos se aplicarán a todos los servicios
+      tags = var.tags # llamamos a nuestra variable de tags
+    }
 }
 
