@@ -223,9 +223,22 @@ output "linux_public_ip" {
     description = "Muestro la ip publica asignada a la instancia"
 }
 
+
 estos output se pueden conocer mejor viendolos en terraform registry, llendose a cada servicio de aws tiene su documentacion y en la seccion output están todos los elementos que podemos exponer.
 
 Target resources:
 Los target resources nos sirven para cuando queremos hacer un apply en solo un recurso y no en todos los recursos que nos muestra el plan.
 Primero se hace un plan, luego:
 terraform apply --target <recurso> --> terraform apply --target aws_subnet.public_subnet
+
+### uso de key pair para las inistancias ###
+en terraform registry podemos utilizar aws_key_pair para crear llaves para ingresar a la máquina
+o creamos directamente en amazon en ec2 instance > key pair
+al crear la llave, esta nos da en la consola la llave publica, mientras que nos descarga la llave privada. no se puede perder esta llave privada porque no funcionará la llave.
+al crear la llave, colocamos el nombre de la llave y seleccionamos el tipo de esta, RSA y .pem es los mas utilizados.
+Es bueno saber esto ya que vamos a utilizar bloques de Data en terraform.
+
+### Bloques de data ###
+Los bloques de data en terraform nos permiten utilizar recursos que ya están creados en nuestra cuenta de aws, en este caso podremos utilizar la llave .pem creada.
+Data no crea recursos, data lee los recursos que ya existen en terraform y los usa con nuestro codigo de terraform. Un uso habitual es cuando se quieren agregar politicas o roles ya creados
+en AWS.
