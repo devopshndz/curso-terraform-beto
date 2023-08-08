@@ -1,0 +1,7 @@
+# Ignorar archivos generados automáticamente
+*.log
+*.txt
+*.pem
+# Ignorar la carpeta "node_modules"
+/node_modules/
+
