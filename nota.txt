@@ -2,6 +2,7 @@ HCL es el lenguaje que utiliza Terrraform para declarar su código.
 El mejor aliado en todo el camino de Terraform es terraform registry en donde podremos encontrar todo lo relacionado
 con modulos, providers, etc.
 
+### Comandos de terraform ###
 terraform init --> inicialización del proyecto en terraform
 terraform init -upgrade --> inicialización del proyecto en terraform actualizando inits anteriores
 terraform plan --> realizará un plan de que recursos va a crear, + crear - eliminar, ~ modificar
@@ -12,6 +13,24 @@ terraform plan --out <nombre del archivo> --> guardar un plan
 terraform apply "nombre del archivo" --> deployar un plan guardados
 terraform fmt --> darle formato a los códigos de terraform 
 terraform validate --> valida la sintaxis de los archivos .tf para que sean correctas.
+terraform providers --> listar los providers que tenemos
+terraform output --> lista los ouputs
+terraform refresh --> busca cambios de la infra desplegada y de haber cambios actualizaría el tfstate. el refreshs e ejecuta de manera automática al hacer un plan
+terraform graph --> lista de las dependencias y como se relacionan los recursos interrelacionados
+terraform graph | dot - Tsvg > grafico.svg = convertimos el resultado en un archivo svg donde se muestra la interrelacion en un diagrama de flujo
+less terraform.tfstate --> similar a un cat
+
+### comandos del terraform state ###
+inician con terraform state
+terraform state list --> nos muestra la lista de los recursos desplegados en formato recursos.nombre
+terraform state show <recurso.nombre> --> ver un recursos en especifico desplegado
+terraform state mv --> mover recursos dentro del tfstate
+terraform state mv <recurso.nombre> <recurso.nombre>  --> ejemplo de como le cambiamos el nombre a un recurso desplegado.
+Esto es muy muy importante ya que a veces se requiere realizar cambios sin destruir los recursos ya creados. Recordemos que cuando hay 
+un cambio, lo que hace terraform es, destruir lo creado y crear nuevamente el cambio realizado.
+terraform state rm --> borra el recurso en el terraform state.
+Puede haber un caso en el que tenemos recursos desplegados, pero no queremos que dicho recursos siga estando ligado a terraform.
+
 
 tree .terraform = muestra el contenido de los providers descargados de terraform en formato arbol
 rm -r .terraform = borra todo el contenido del proyecto terraform para poder iniciarlizar un proyecto desde 0
@@ -242,3 +261,14 @@ Es bueno saber esto ya que vamos a utilizar bloques de Data en terraform.
 Los bloques de data en terraform nos permiten utilizar recursos que ya están creados en nuestra cuenta de aws, en este caso podremos utilizar la llave .pem creada.
 Data no crea recursos, data lee los recursos que ya existen en terraform y los usa con nuestro codigo de terraform. Un uso habitual es cuando se quieren agregar politicas o roles ya creados
 en AWS.
+
+### El terraform.state o tfstate ###
+Es el registro de estado de la insfraestructura desplegada (Estado real)
+Nunca se debe editar manualmente este archivo
+El tfstate contiene informacion sensible y debe ser tratado con cuidado.
+Se debe trabajar de manera remota pero NUNCA se debe subir el tfstate a un repositorio. (ojo, si borras el archivo .terraform, se borra el contenido del tfstate)
+Para trabajar remoto se debe trabajar con:
+    guardar en buckets3 cifrado y versionado y una tabla de dynamo db para que una persona 
+    Terraform cloud ayuda mucho en este tema.
+
+### Comandos de terraform y tfstate ###
