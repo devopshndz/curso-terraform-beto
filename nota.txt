@@ -272,3 +272,10 @@ Para trabajar remoto se debe trabajar con:
     Terraform cloud ayuda mucho en este tema.
 
 ### Comandos de terraform y tfstate ###
+
+
+##Funciones de terraform.
+tenemos que dar terraform init antes.
+Podemos escribir terraform console y nos abre una consola en donde se pueden escribir comandos de terraform.
+Listado de funciones y sus usos.
+
