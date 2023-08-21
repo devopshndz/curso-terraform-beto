@@ -1,0 +1,4 @@
+#### dynamic blocks o bloques dinamicos.
+
+permiten tener un codigo mas prolijo. nos facilita mucho el codigo cuando tenemos muchos cuadros de codigo repetidos.
+ejemplo en los security group, cuando queremos agregar mas reglas de ingress al security group necesitamos muchas mas declaraciones de estas y se puede volver muy enredado todo. 

@@ -33,3 +33,6 @@ crearemos un s3.tf y lo configuraremos
 Si creamos un bucket desde terraform y le asignamos su respectivo nombre, al hacer un plan el no nos va a mostrar que hay error, pero puede que al realizar un apply, si el nombre ya existe, el bucket
 no se creará.
 usaremos un random string para esto.
+con el random string buscaremos que a nuestro nombre de bucket se le agreguen aleatoriamente letras y que así sea mucho mas dificil de que el nombre coincida mundialmente.
+se debe agregar en el provider el provider de random string
+se crea un sufijo nuevo en el archivo locals que sea solamente para el s3
