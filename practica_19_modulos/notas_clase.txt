@@ -1,0 +1,15 @@
+#### modulos en terraform
+
+Los modulos ayudan a que nuestro codigo sea mas simple de mantener y mas facil de utilizar.
+Existen modulos pricipales (man, variables, output, provider, data) dentro del directorio principal y modulos hijos en subcarpetas (main, variables, output)
+Esto sirve para poder tener un modulo para desplegar subnets, otro para desplegar vpc, otro para instancias, etc.
+Hay modulos hechos por 3eros en terraform registry
+
+Cuando se utilizan estos modulos si o si se debe ver la documentacion de estos.
+En los modulos de la comunidad de terraform retgistry se muestran los modos de uso de estos modulos y las variables permitidas.
+
+#### modulos: cambiar el despliegue actual del bucket s3.
+
+vamos a utilizar modulos para hacer dicho cambiop
+creamos una carpeta modulos, y una subcarpeta s3 dentro de modulos y vamos a mover allí el archivo s3.tf que teniamos y le cambiamos el nombre a main.tf
+de igual forma creamos un file variables.tf y agregamos la vvariable del nombre del bucket solo con su descripcion y tipo string.
