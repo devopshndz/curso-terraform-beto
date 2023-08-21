@@ -1,0 +1,43 @@
+terraform workspaces.
+
+Los workspaces nos permite reutilizar nuestro codgo y desplegarlo en diferentes entornos de trabajo o en diferentes ambientes de trabajo como develop, productio, etc.
+Aunque no es muy popular ni algo que se utilice tanto.
+
+terraform workspace list --> lista los workspace de trabajo
+terraform workspace new <nombre> --> crea un nuevo workspace.
+terraform workspace select <nombre> --> seleccionar o cambiarse a un workspace de trabajo.
+terraform workspace delete <nombre> --> elimina el workspace de trabajo seleccionado
+cuando creamos espacios de trabajo, se nos crea un directorio llamado terraform.tfstate.d en donde estan estos ambientes.
+
+para utilizar estos depligues se tienen que referenciar mediante las variables. 
+por ejemplo, si vamos a resplegar una vpc en un ambiente y tenemos los ambientes de develop y prod creado, se debe de gestionar, las variables y el recurso:
+
+varaibles vppc:
+variable "virginia_cidr" {
+  description = "CIDR VPC Virginia"
+  type        = map(string)
+}
+
+tfvars:
+virginia_cidr = {
+  prod = "10.10.0.0/16"
+  develop = "172.16.0.0/16"
+}
+
+vpc:
+resource "aws_vpc" "vpc_virginia" {
+  cidr_block = lookup(var.virginia_cidr,terraform.workspace) 
+  tags = {
+    Name = "VPC_Virginia"
+  }
+}
+
+con el lookup, dependiendo en que workspace estamos trabajando, terraform trabajara con el cidr que corresponda
+rapidamente:
+si estamos trabajando en el ambiente de develop, al hacer un plan nos mostrará que va a desplegar la vpc con el cidr de develop.
+caso contrario si estuviesemos trabajando con prod.
+Es algo utili cuando a fuerzas se trabaja en despliegues en ambientes, pero tambien es de cuidado porque se tienen que crear siempre mapas en las variables para que pueda trabajarse y tener mucho 
+cuidado con la definicion de estas.
+
+Nota importante:
+Al trabajar con workspace, default queda sin referenciarse, por lo tanto o se debe declarar el trabajo en default o desestimarlo y siempr estar pendiente de trabajar en diferentes workspace y no en default.

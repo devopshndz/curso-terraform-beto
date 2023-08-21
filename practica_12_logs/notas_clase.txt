@@ -1,0 +1,24 @@
+logs en terraform
+Son importantes para poder conocer que cosas hace terraform cuando uno realiza un plan o un apply.
+Es importante saber de logs para saber que está pasando si pasa un error.
+Se manejan mediante variables de entorno.
+
+export TF_LOG=<nivel de detalle> --> salida de logs por pantalla
+export TF_LOG_PATH=file.txt --> guardamos la info del log en un archivo
+env | grep TF_LOG --> vemos las variables que inicien con TF_LOG
+unset TF_LOG
+unset TF_LOG_PATH quitamos las variables agregadas para que no nos arrojen mas logs.
+
+Hay 5 tipos de logs en cuanto al detalle:¡
+INFO = minimo detalle
+WARNING
+ERROR
+DEBUG
+TRACE = maximo detalle
+
+ejemplo:
+cuando vamos a hacer un plan, terraform nos devuelve, cuales son los recursos que va a desplegar, y si no hay nada para desplegar, nos dice que no hay recursos por despliegue.
+Si seteamos la variable para el log:
+    export TF_LOG=Trace 
+Estamos haciendo que nos arroje logs con el maximo nivel de detalle (Trace) y cuando ejecutamos el plan, nos muestra dicho log de detalle.
+

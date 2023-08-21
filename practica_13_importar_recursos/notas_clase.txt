@@ -1,0 +1,47 @@
+importar recursos que no lo a deployado desde terraform.
+Terraform ofrece una manera de poder importar recursos que por ejemplo, fueron creados por fuera de terraform, manualmente y es con el import. Nada mas se necesita el ID del recurso en cuetion.
+
+terraform import <id_resource>
+OJO: un ejemplo de una instancia de ec2 --> 
+terraform import aws_instance_instance_id
+
+Revisar la documentacion de terraform registry acerca de import en la parte final de cada uno de los recursos.
+
+Ejercicio:
+1) desplegada la infra actual, vamos a borrar la instancia manualmente desde la consola de amazon. instance > terminate instance
+2) vamos a borrar la instancia del terraform state:
+    terraform state list 
+    terraform state rm aws_instance.public_instance
+3) comentamos el codigo de ec2.tf, output.tf
+4) hacemos un plan y lo unico que debe mostrarnos es que el output va a quedar en null.
+5) apply
+6) creamos una instancia ec2 nueva desde la consola t2.micro
+7) una vez creada, nos vamos al codigo de ec2 y vamos a crear un recurso vacío de la instancia que se va a tomar como referencia:
+    
+    resource "aws_instance" "mywebserver" {
+    }
+
+se crea este recurso vacio que va a servir como referencia para importar la instancia creada manualmente.
+8)en la terminal se coloca: terraform import aws_instance.mywebserver <id_instancia>
+Y esto importa la inistancia al terraform state.
+terraform state list --> debe de salirnos aws_instance.mywebserver
+
+9) terraform state show aws_instance.mywebserver
+    copiamos el resultado que nos arrojó el cual es el codigo de la instancia y lo pegamos dentro del recurso ec2 vacio que creamos y empezamos a realizar carpinteria.
+
+    resource "aws_instance" "mywebserver" {
+        ami           = "ami-08a52ddb321b32a8c"
+        instance_type = "t2.micro"
+        key_name      = data.aws_key_pair.key.key_name
+        subnet_id     = aws_subnet.public_subnet.id
+        tags = {
+            "Name" = "MyServer"
+        }
+        vpc_security_group_ids = [
+            aws_security_group.sg_public_instance.id
+        ]
+        }
+
+10) plan
+11) apply
+Podemos ver una cez que se haga el apply, que la instancia ya toma los tags que teniamos antes y tambien la configuracion de conectividad a la subnets.

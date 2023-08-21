@@ -1,0 +1,52 @@
+count vs for_each
+nos ayudan a desplegar multiples recursos sin tener que repetir codigo.
+
+count -->
+Para la funcion count debemos trabaja con listas.
+Declaramos en una variable "instancias" una lista de string y que tenga de valores los nombres de las instancias.
+en el recurso ec2 declaramos la funcion count:
+ count                  = length(var.instancias) # length de longitud. le pasamos la lista de instancias, el count tomará esta lista.
+
+y para los tags.
+Name = var.instancias[count.index] # llamamos la variable instancia y va a ir contando cada posicion de la instancia.
+
+Al ejecutar el plan se nos mostrará que se crean las 3 instancias que pasamos como variables instancias y que la llamamos en la funcion count tomando dichos nombres y que a parte tomará cada una de los 
+tags y los colocará en cada instancia.
+
+Notas: 
+Al usar count se vuelve un poco complejo el borrado de recursos. Cuando se borra un recurso en este caso una instancia no se puede ir a la variable y borrar el nombre de la instancia, lo que hace
+lanzamos un plan es que se cambian de posicion las instancias ya que a count no le intereza sino la posicion en la que se encuentre. esto puede crear muchos conflictos.
+
+for_each -->
+El for_each solo puede ser utilizado con variables de tipo set y maps, importante esto.
+set para listas y map para un mapa jajaja
+for_each = var.instancias para que haga un recorrido de todas los nombres de las instancias de la variable y vaya creando cada instancia.
+
+tags = {
+    Name = each.value # como estamos utilizando for_each, llamamos la iteracion con each.value que es el resultado de cada iteracion que realiza
+  }
+para colocar los tags correspondientes.
+
+cuando al final aplicacmos los cambios y listamos con terraform state list nos va a mostrar los recursos con el nombre de estos y es muy muy facil para cuando se vaya a trabajar con estos recursos
+desde el state
+data.aws_key_pair.key
+aws_instance.public_instance["apache"]
+aws_instance.public_instance["jumpserver"]
+aws_instance.public_instance["mysql"]
+aws_internet_gateway.igw
+
+Si por ejemplo, yo elimino una de mis instancias en la variable instancia, no hay problema como el que generaba con count, ya que con el for_each estamos trabajando creando un mapa y no una lista 
+y trabajamos con el del mapa y no la posicion.
+
+CASO CURIOSO:
+Si por ejemplo estamos trabajando con una lista de instancias:
+
+variable "instancias" { # solo cuando se usa for_each
+  description = "descripcion de las instancias"
+  type        = list(string)
+  default     = ["apache", "mysql", "jumpserver"] # lista de instancias
+}
+
+y no la podemos cambiar pero queremos trabajar con for_each, para que no se rompa el codigo se debe pasar un toset en el for_each y así implementariamos dicha lista.
+resource "aws_instance" "public_instance" {
+  for_each               = toset(var.instancias)

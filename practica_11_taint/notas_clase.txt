@@ -1,0 +1,15 @@
+terraform taint (vieja forma)
+terraform untaint (vieja forma)
+
+nos ayuda a marcar un recurso desplegado previamente con terraform. Esto con el fin de que si lo modificamos, al hacer un plan salga que el recurso va a ser destruido y creado nuevamente
+a parte de que tambien saldrá tainted o manchado.
+
+terraform untaint nos permite desmarcar los recursos previamente marcados.
+
+esto ya está en deshuso, ahora la mejor manera de hacer esto de con el comando replace=
+terraform apply --replace=<recurso a reemplazar>
+
+Este comando se ejecuta en el apply directamente, cuando se han hecho cambios en el codigo del recurso en cuetión, y queremos que este recurso se destruya y se vuelva a construir con los cambios
+se declara el recurso en cuetión en el apply y este lo destruye y lo vuelve a crear. ya no hace falta hacer taint desde el plan.
+
+Sin embargo, taint puede servir aún, si por alguna razon en un despliegue de un recurso, este sale con errores y en estado manchado o tainted, ahí se recomienda trabajar con taint y untaint
