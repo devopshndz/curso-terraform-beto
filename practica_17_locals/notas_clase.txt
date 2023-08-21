@@ -25,3 +25,11 @@ Name = "${each.value}-${local.sufix}"
 NOTA IMPORTANTE:
 al crear el archivo locals.tf y declarar el recurso locals {} para usarse se debe llamar con local. sin la s.
 
+#### Otro posible uso de los locas en buckets de s3.
+el bucket de s3, el nombre tiene que ser unico en el mundo.
+nos podemos ayudar con el locals.
+crearemos un s3.tf y lo configuraremos
+
+Si creamos un bucket desde terraform y le asignamos su respectivo nombre, al hacer un plan el no nos va a mostrar que hay error, pero puede que al realizar un apply, si el nombre ya existe, el bucket
+no se creará.
+usaremos un random string para esto.
