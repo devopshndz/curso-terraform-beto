@@ -1,0 +1,20 @@
+### Condicionales - ciclo if
+Se puede utilizar el ciclo if en terraform de forma distinta a como se hace en programacion.
+
+las estructuras condicionales se inician con un signo de pregunta: ?
+? 1:0
+esto significa que si lo que se evalua da true (boolean) toma el valor 1 y despliega. si por el contrario
+da false, toma el valor 0 y no despliega o no ejecuta el codigo.
+
+enable_monitoring = true # boole
+count = var.enable_monitoring ? 1 : 0
+va a contar lo que tiene la variable enable_monitoring y si esta es booleana y tiene de valor true, toma como valor 1
+y despliega, si tiene valor de false, toma el  y no despliega.
+
+tambien funciona con number en vez de bool
+el type de la variable debe ser number y no bool
+enable_monitoring = 1 # declaramos que la variable vale 1
+count = var.enable_monitoring == 1 ? 1 : 0
+cuenta la variable enable_monitoring, si su valor es igual a 1, toma el valor 1 de true, sino toma el valor false de 0
+
+El mas comun es bool por lo facil que es.

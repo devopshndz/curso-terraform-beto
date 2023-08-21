@@ -1,0 +1,27 @@
+#### Locals
+Locals nos permite construir expresiones que podamos utilizar en el resto de los recursos para estandarizar por ejemplo
+los nombres de los recursos desplegados.
+
+nombre del proyecto, environment, la region, ZA, etc. info util.
+
+se crea un archivo locals.tf con la construccion de nuestra expresiones
+locals {
+    sufix = "${var.tag.project}-${var.tag.env}-${var.tag.region}" # recurso-proyecto-environment-region
+}
+
+tenemos que tener en cuenta que esta expresion esta compuesta por variables, debemos tener declaradas estas.
+project, env y region.
+
+luego de eso podemos usar el local en nuestros recursos, 
+vamos por ejemplo a la vpc y en el tag Name agregamos:
+Name = "Vpc-Virginia-${local.sufix}"
+y ya estariamos trayendonos todo el prefijo y sus variables declaradas.
+
+Ya lo que queda es agregarlo en todos los recursos.
+para agregarlo en las instancias, como estas tienen el each.value se coloca este entre "${}"
+Name = "${each.value}-${local.sufix}"
+
+
+NOTA IMPORTANTE:
+al crear el archivo locals.tf y declarar el recurso locals {} para usarse se debe llamar con local. sin la s.
+
